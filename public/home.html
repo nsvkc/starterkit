@@ -1,0 +1,421 @@
+<html>
+<head>
+    <title> Starter kit applicatiom</title>
+    <style>
+        div.absolute {
+    position: absolute;
+    top: 0x;
+    left: 80;
+    
+
+}
+    </style>
+</head>
+
+<body>
+         <img src="logo.png" alt="Paris" class="center">
+    
+    
+<p>Hello there!</br>
+</br>
+I am N.Sree Vaishnav Karam Chand.The goal of this starter kit application is to introduce what MEAN  is and to demonstrate the steps required to build a simple and basic MEAN application</br><p>
+
+<p><h2>You know what I MEAN?</h2>
+MEAN stands for MongoDB, ExpressJS, AngularJS and Node.js which is used to develop end to end websites and web applications</br>
+One of the great things about  MEAN stack applications is that execution environment of server and client side can be written using a single language ie JavaScript.</br>
+Database used is Mongodb, Server comprises of Express and Node and the front end is developed using Angular.</br>
+Click on the links down below to know more about each component of MEAN</p>
+
+<p><h2>Setting up MEAN components</h2></p>
+<p><h3><strong>1.Mongodb</strong></h3>
+1.Download Mongodb from <a href="https://www.mongodb.com/download-center?#community">here</a> </br>
+2.Run the installation set up and during the installation process you will be given the option to install MongoDB Compass in addition to MongoDB Server.Using MongoDb compass is suggested as it makes life easy in working with databases</br>
+3.After the installation is done, goto program files->MongoDb->Server->3.6->bin an copy the path ie C:\Program Files\MongoDB\Server\3.6\bin and paste it in the PATH variables of environment variables</br>
+4.Open command prompt and create db and log directories using the commands "mkdir c:\data\db
+mkdir c:\data\log"</br>
+5.Run mongodb using command "mongod" in command prompt and if it says " waiting for connections on port 27017" the installation is succesful</br>
+</p>
+<p><h3>2.Node</h3>
+1.Download Node.js from <a href="https://nodejs.org/en/download/">here</a></br>
+2.Run the installation set up and once finished, copy the address "C:\Program Files\nodejs" and paste it in the PATH variable of environment variables</br>
+3.To be able to access npm or the Node Package Manager copy it's address present in C:->Users->Appdata->Roaming->npm and paste it's address ie "C:\Users\AppData\Roaming\npm" in the PATH variable
+<h4>Runing npm behind a proxy server</h4>
+If you are working behind a corporate web proxy server use the following commands in cmd to access npm</br></br>
+npm config set proxy http://proxy.company.com:8080</br>
+npm config set https-proxy http://proxy.company.com:8080</br></br>
+4.Close everything and run "node -v" and if the version appears it means that node is installed succesfully
+</p>
+<p>
+<h3>3.ExpressJs</h2>
+Use command "$ npm install -g express" in command prompt and wait for the npm to download and install all the ExpressJs packages.   
+</p>
+<p><h3>4.AngularJs</h3>
+To install Angular cli globally, use the command "npm install -g @angular/cli" and wait for npm to download all the packages.
+</p>
+<p><h2>Building the application from Scratch</h2>
+<h3>Initial Setup</h3>
+</br><strong>STEP 1: </strong> Go to the directory where you want the app to reside and execute "npm init" and enter the details for your project
+</br><img src="init.PNG" alt="initsetup">
+</br></br>This creates a package.json file that will contain all the details
+</br></br><img src="json.PNG" alt="json file">
+</br><strong>STEP 2: </strong> copy the "node_modules" folder that is generated when express is installed or simply use the command "npm install express --save" to install express locally an "--save" to appear express as a dependency in the json file
+</br><strong>STEP 3: Additional Installations:</strong> Tools like mongoose, morgan, body-parser and method-override are required to make the work flow smooth.Use "npm  install #toolname# --save".
+</br><img src="tools.PNG" alt="initsetup">
+</br></br>package.json file will now look like this with all it's dependencies included
+</br></br><img src="json2.PNG" alt="json file">
+</br></br><strong>STEP 4:FILE STRUCTURE </strong>Now create files and folders according to the file structure shown below
+<img src="structure1.png" alt="FileStructure" >
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    
+</body>
+</html> 
+</p>
+<h3>Node Configuration</h3>
+<p>In our <code>package.json</code> file, we told it that our main file would be <code>index.js</code>. This is the main file for our Node app and where we will configure the entire application.</p>
+<p>This is the file where we will:</p>
+<ul>
+<li>Configure our application</li>
+<li>Connect to our database</li>
+<li>Create our Mongoose models</li>
+<li>Define routes for our RESTful API</li>
+<li>Define routes for our frontend Angular application</li>
+<li>Set the app to listen on a port so we can view it in our browser</li>
+</ul>
+<p>For now, we will just configure the app for Express, our MongoDB database, and listening on a port.</p>
+<pre><code class="language-javascript">// index.js
+
+    // set up ========================
+    var express  = require('express');
+    var app      = express();                               // create our app w/ express
+    var mongoose = require('mongoose');                     // mongoose for mongodb
+    var morgan = require('morgan');             // log requests to the console 
+    var bodyParser = require('body-parser');    // pull information from HTML POST 
+    var methodOverride = require('method-override'); // simulate DELETE and PUT 
+
+    // configuration =================
+
+    mongoose.connect('mongodb://localhost/meanDB');     // connect to mongoDB database named meanDB,you can use any name you want 
+
+    app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
+    app.use(morgan('dev'));                                         // log every request to the console
+    app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
+    app.use(bodyParser.json());                                     // parse application/json
+    app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
+    app.use(methodOverride());
+
+    // listen (start app with node index.js) ======================================
+    app.listen(8080);
+    console.log("App listening on port 8080");
+
+</code>
+</pre>
+<p>Just with that bit of code, we now have an HTTP server courtesy of Node. We have also created an app with Express and now have access to many benefits of it. In our <code>app.configure</code> section, we are using express modules to add more functionality to our application.</p>
+<h3>Database Setup</h3>
+<p>Open the command prompt and enter the command "mongod" for the mongodb to listen to the connection call</p>
+<p>The command <code>mongoose.connect</code> is used to connect to the database</p>
+<h3>Testing the application</h3>
+<p>Now that we have our <code>package.json</code> and <code>index.js</code> started up, we can start up our server and see what's going on. Just go into your console and use the following command:</p>
+<p><code>node index.js</code> and don't close the cmd window in which the database is running. Now you have a server listening on port 8080. You can't see anything in your browser at <strong>http://localhost:8080</strong> yet since we didn't configure our application to output anything. But it's a start!</p>
+<div class="alert alert-info">
+<i class="icon-bolt"></i> <strong>Automatically restart server when files change:</strong> By default, node will not monitor for file changes after your server has been started. This means you'd have to shut down and start the server everytime you make changes to the app
+</div>
+<h2>Application Flow</h2>
+<p>Now a brief overview of how all our moving parts will work together. There are a lot of different ideas and technologies involved in this application that it is easy to get mixed up with them all.The diagram below explains a bit of the separation of tasks and how the parts tie in together.</p>
+<div class="text-center">
+<img src="meanflow.PNG" alt="meanflow" >
+</div>
+<p>Angular is on its own in the frontend. It accesses all the data it needs through the Node API. Node hits the database and returns JSON information to Angular based on the RESTful routing.</p>
+<h2>Creating Our Node API</h2>
+<p>Before we get to the frontend application, we need to create our RESTful API. This will allow us to have an api that will <strong>get all todos</strong>, <strong>create a todo</strong>, and <strong>complete and delete a todo</strong>. It will return all this information in JSON format.</p>
+<h3>Todo Model</h3>
+<p>We must define our model for our Todos. We'll keep this simple. After the <strong>configuration section</strong> and before the <strong>listen</strong> section, we'll add our model.</p>
+<pre><code class="language-javascript">
+    // define model =================
+    var Todo = mongoose.model('Todo', {
+        text : String
+    });
+</code>
+</pre>
+<p>That is all we want. Just the text for the todo. MongoDB will automatically generate an <code>_id</code> for each todo that we create also.</p>
+<h3>RESTful API Routes</h3>
+<p>Let's generate our Express routes to handle our API calls.</p>
+<pre><code class="language-javascript">// index.js
+...
+
+// routes ======================================================================
+
+    // api ---------------------------------------------------------------------
+    // get all todos
+    app.get('/api/todos', function(req, res) {
+
+        // use mongoose to get all todos in the database
+        Todo.find(function(err, todos) {
+
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(todos); // return all todos in JSON format
+        });
+    });
+
+    // create todo and send back all todos after creation
+    app.post('/api/todos', function(req, res) {
+
+        // create a todo, information comes from AJAX request from Angular
+        Todo.create({
+            text : req.body.text,
+            done : false
+        }, function(err, todo) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you create another
+            Todo.find(function(err, todos) {
+                if (err)
+                    res.send(err)
+                res.json(todos);
+            });
+        });
+
+    });
+
+    // delete a todo
+    app.delete('/api/todos/:todo_id', function(req, res) {
+        Todo.remove({
+            _id : req.params.todo_id
+        }, function(err, todo) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you create another
+            Todo.find(function(err, todos) {
+                if (err)
+                    res.send(err)
+                res.json(todos);
+            });
+        });
+    });
+
+...
+</code>
+</pre>
+<p>Based on these routes, we've built a table to explain how a frontend application should request data from the API.</p>
+<table class="table table-bordered table-striped">
+<thead>
+<tr>
+<td>
+HTTP Verb
+</td>
+<td>
+URL
+</td>
+<td>
+Description
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+GET
+</td>
+<td>
+/api/todos
+</td>
+<td>
+Get all of the todos
+</td>
+</tr>
+<tr>
+<td>
+POST
+</td>
+<td>
+/api/todos
+</td>
+<td>
+Create a single todo
+</td>
+</tr>
+<tr>
+<td>
+DELETE
+</td>
+<td>
+/api/todos/:todo_id
+</td>
+<td>
+Delete a single todo
+</td>
+</tr>
+</tbody>
+</table>
+<p>Inside of each of our API routes, we use the Mongoose actions to help us interact with our database. We created our Model earlier with <code>var Todo = mongoose.model</code> and now we can use that to <strong>find</strong>, <strong>create</strong>, and <strong>remove</strong>. There are many more things you can do and I would suggest looking at the official <a href="http://mongoosejs.com/docs/guide.html" target="_blank">docs</a> to learn more.</p>
+<p>Our API is done! If you start up your application you can interact with it at <code>localhost:8080/api/todos</code> to get all the todos. There won't be anything currently since you haven't added any.</p>
+<h2>Frontend Application with Angular</h2>
+<p>We have <strong>created a Node application</strong>, <strong>configured our database</strong>, <strong>generated our API routes</strong>, and <strong>started a server</strong>. So much already done and still a little bit longer to go!</p>
+<p>The work that we've done so far can stand on its own as an application. It can be an API we use let applications and users connect with our content.</p>
+<p>  We are going to keep this simple so we'll have just our <code>index.html</code> and <code>core.js</code> to define our frontend.</p>
+<h3>Defining Frontend Route</h3>
+<p>We have already defined our API routes. Our application's API is accessible from <code>/api/todos</code>, but what about our frontend? How do we display the index.html file at our home page?</p>
+<p>We will add one route to our <code>index.js</code> file for the frontend application. This is all we need to do since Angular will be making a single page application and handle the routing.</p>
+<p>After our API routes, and before the <code>app.listen</code>, add this route:</p>
+<pre><code class="language-javascript">// index.js
+...
+    // application -------------------------------------------------------------
+    app.get('*', function(req, res) {
+        res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    });
+...
+</code>
+</pre>
+<p>This will load our single index.html file when we hit <code>localhost:8080</code>.</p>
+<h3>Setting Up Angular <small>core.js</small></h3>
+<p>Let's go through our Angular setup first. We have to <strong>create a module</strong>, <strong>create a controller</strong>, and <strong>define functions to handle todos</strong>. Then we can <strong>apply to view</strong>.</p>
+<pre><code class="language-javascript">// public/core.js
+var myTodo = angular.module('myTodo', []);
+
+function mainController($scope, $http) {
+    $scope.formData = {};
+
+    // when landing on the page, get all todos and show them
+    $http.get('/api/todos')
+        .success(function(data) {
+            $scope.todos = data;
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        });
+
+    // when submitting the add form, send the text to the node API
+    $scope.createTodo = function() {
+        $http.post('/api/todos', $scope.formData)
+            .success(function(data) {
+                $scope.formData = {}; // clear the form so our user is ready to enter another
+                $scope.todos = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
+    // delete a todo after checking it
+    $scope.deleteTodo = function(id) {
+        $http.delete('/api/todos/' + id)
+            .success(function(data) {
+                $scope.todos = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
+}
+</code>
+</pre>
+<p>We create our Angular module (<code>myApp</code>) and controller (<code>mainController</code>).</p>
+<p>We also create our functions to <strong>get all todos</strong>, <strong>create a todo</strong>, and <strong>delete a todo</strong>. All these will be hitting the API we just created. On page load, we will <code>GET /api/todos</code> and bind the JSON we receive from the API to <code>$scope.todos</code>. We will then loop over these in our view to make our todos.</p>
+<p>We'll follow a similar pattern for <strong>creating and deleting</strong>. Run our action, remake our todos list.</p>
+<h3>Frontend View <small>index.html</small></h3>
+<p>Here we will keep it simple. This is the HTML needed to interact with Angular. We will:</p>
+<ul>
+<li>Assign Angular module and controller</li>
+<li>Initialize the page by getting all todos</li>
+<li>Loop over the todos</li>
+<li>Have a form to create todos</li>
+<li>Delete todos when they are checked</li>
+</ul>
+<pre><code class="language-markup">&lt;!-- index.html --&gt;
+&lt;!doctype html&gt;
+
+&lt;!-- ASSIGN OUR ANGULAR MODULE --&gt;
+&lt;html ng-app="myTodo"&gt;
+&lt;head&gt;
+    &lt;!-- META --&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;&lt;!-- Optimize mobile viewport --&gt;
+
+    &lt;title&gt;Node/Angular Todo App&lt;/title&gt;
+
+    &lt;!-- SCROLLS --&gt;
+    &lt;link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"&gt;&lt;!-- load bootstrap --&gt;
+    &lt;style&gt;
+        html                    { overflow-y:scroll; }
+        body                    { padding-top:50px; }
+        #todo-list              { margin-bottom:30px; }
+    &lt;/style&gt;
+
+    &lt;!-- SPELLS --&gt;
+    &lt;script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"&gt;&lt;/script&gt;&lt;!-- load jquery --&gt;
+    &lt;script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"&gt;&lt;/script&gt;&lt;!-- load angular --&gt;
+    &lt;script src="core.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;!-- SET THE CONTROLLER AND GET ALL TODOS --&gt;
+&lt;body ng-controller="mainController"&gt;
+    &lt;div class="container"&gt;
+
+        &lt;!-- HEADER AND TODO COUNT --&gt;
+        &lt;div class="jumbotron text-center"&gt;
+            &lt;h1&gt;TO-DO app&lt;span class="label label-info"&gt;{{ todos.length }}&lt;/span&gt;&lt;/h1&gt;
+        &lt;/div&gt;
+
+        &lt;!-- TODO LIST --&gt;
+        &lt;div id="todo-list" class="row"&gt;
+            &lt;div class="col-sm-4 col-sm-offset-4"&gt;
+
+                &lt;!-- LOOP OVER THE TODOS IN $scope.todos --&gt;
+                &lt;div class="checkbox" ng-repeat="todo in todos"&gt;
+                    &lt;label&gt;
+                        &lt;input type="checkbox" ng-click="deleteTodo(todo._id)"&gt; {{ todo.text }}
+                    &lt;/label&gt;
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- FORM TO CREATE TODOS --&gt;
+        &lt;div id="todo-form" class="row"&gt;
+            &lt;div class="col-sm-8 col-sm-offset-2 text-center"&gt;
+                &lt;form&gt;
+                    &lt;div class="form-group"&gt;
+
+                        &lt;!-- BIND THIS VALUE TO formData.text IN ANGULAR --&gt;
+                        &lt;input type="text" class="form-control input-lg text-center" placeholder="eg.Office at 8am" ng-model="formData.text"&gt;
+                    &lt;/div&gt;
+
+                    &lt;!-- createToDo() WILL CREATE NEW TODOS --&gt;
+                    &lt;button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()"&gt;Add&lt;/button&gt;
+                &lt;/form&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+</pre>
+<h2>TEST YOUR APPLICATION</h2>
+<p>Go to command prompt and start the app by the command "node index.js" and head over to http://localhost:8080/ .Add some todos and later delete some to make sure that the app is fully functional.</p>
+</br></br><img src="app.png" alt = "app image">
+
+
+
+
+</body>
+</html>
